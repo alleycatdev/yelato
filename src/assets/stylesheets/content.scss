@@ -1,0 +1,49 @@
+@import "./theme.scss";
+
+.content {
+  margin-top: 5rem;
+  text-align: center;
+
+  .vault-data {
+    margin-bottom: 5rem;
+  }
+
+  .heading {
+    color: $highlight-color;
+    font-weight: 700;
+  }
+
+  .title {
+    color: $font-color;
+  }
+
+  .card {
+    background-color: $border-color;
+    border: 1px solid $alert-color;
+  }
+
+  p,
+  span {
+    color: $font-color;
+  }
+
+  a {
+    color: $alert-color;
+  }
+
+  .gelato-logo {
+    width: 1rem;
+    margin-left: 1rem;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+  }
+
+  .progress {
+    background-image: linear-gradient(to right, $alert-color 30%, #ededed 30%);
+  }
+
+  .call-to-action:disabled {
+    background-color: grey;
+    border-color: grey;
+  }
+}

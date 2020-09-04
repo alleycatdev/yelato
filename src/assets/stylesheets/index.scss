@@ -1,0 +1,14 @@
+@import "./theme.scss";
+
+body {
+  margin: 0;
+  font-family: "K2D", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: $background-color;
+  min-height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
