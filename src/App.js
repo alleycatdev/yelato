@@ -26,7 +26,7 @@ class App extends React.Component {
       walletconnect: {
         package: WalletConnectProvider, // required
         options: {
-          infuraId: process.env.INFURA_PROJECT_ID, // required
+          infuraId: process.env.REACT_APP_INFURA_PROJECT_ID, // required
         },
       },
     };
