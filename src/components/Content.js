@@ -103,14 +103,6 @@ class Content extends React.Component {
               </div>
               <div className="level-item has-text-centered">
                 <div>
-                  <p className="heading">Rescue Price</p>
-                  <p className="title">
-                    {yETH.debtValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </p>
-                </div>
-              </div>
-              <div className="level-item has-text-centered">
-                <div>
                   <p className="heading">Liquidation Price</p>
                   <p className="title">
                     ${yETH.liquidationPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
