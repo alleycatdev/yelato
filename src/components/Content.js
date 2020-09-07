@@ -1,9 +1,11 @@
 import React from "react";
 import Maker from "@makerdao/dai";
 import { McdPlugin } from "@makerdao/dai-plugin-mcd";
-
+import ethers from "ethers";
 import "../assets/stylesheets/content.scss";
 import gelatoLogo from "../assets/images/gelato_logo_white.png";
+
+import GelatoManagerAbi from "../abis/gelatoManager.json";
 
 class Content extends React.Component {
   constructor(props) {
@@ -11,10 +13,12 @@ class Content extends React.Component {
 
     this.state = {
       yETH: null,
+      amount: 0.1,
     };
 
     this.fetchCdpData = this.fetchCdpData.bind(this);
     this.donate = this.donate.bind(this);
+    this.updateDonationAmount = this.updateDonationAmount.bind(this);
   }
 
   async componentDidMount() {
@@ -32,7 +36,7 @@ class Content extends React.Component {
     }, 60000);
   }
 
-  async fetchCdpData(manager, proxyAddress) {
+  async fetchCdpData(manager) {
     const yETHVault = await manager.getCdp(13972);
 
     this.setState({
@@ -41,7 +45,21 @@ class Content extends React.Component {
   }
 
   donate() {
-    console.log("donating");
+    const signer = new ethers.providers.Web3Provider(window.ethereum).getSigner();
+
+    const yelato = new ethers.Contract(
+      process.env.REACT_APP_YELATO_CONTRACT,
+      GelatoManagerAbi,
+      signer
+    );
+
+    yelato.provideFunds();
+  }
+
+  updateDonationAmount(event) {
+    this.setState({
+      amount: event.target.value,
+    });
   }
 
   render() {
@@ -81,6 +99,14 @@ class Content extends React.Component {
               </div>
               <div className="level-item has-text-centered">
                 <div>
+                  <p className="heading">Rescue Price</p>
+                  <p className="title">
+                    {yETH.debtValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </p>
+                </div>
+              </div>
+              <div className="level-item has-text-centered">
+                <div>
                   <p className="heading">Liquidation Price</p>
                   <p className="title">
                     ${yETH.liquidationPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -96,6 +122,13 @@ class Content extends React.Component {
             </progress>
           )}
         </div>
+
+        {this.props.web3 && (
+          <div className="yelato-balance">
+            Yelato Transactions Balance:{" "}
+            <span className="highlight-balance">{this.props.yelatoBalance}</span> ETH
+          </div>
+        )}
 
         <div className="card">
           <div className="card-content">

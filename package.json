@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@gelatonetwork/core": "^0.5.3",
     "@makerdao/dai": "^0.32.2",
     "@makerdao/dai-plugin-mcd": "^1.6.0-rc",
     "@testing-library/jest-dom": "^4.2.4",
@@ -11,7 +12,7 @@
     "@walletconnect/web3-provider": "^1.2.2",
     "bulma": "^0.9.0",
     "bulma-extensions": "^6.2.7",
-    "ethers": "^5.0.9",
+    "ethers": "^5.0.11",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
