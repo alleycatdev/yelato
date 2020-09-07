@@ -121,7 +121,12 @@ class Content extends React.Component {
                 <div>
                   <p className="heading">Collateralization Ratio</p>
                   <p className="title">
-                    ${yETH.collateralizationRatio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    {yETH.collateralValue
+                      .div(yETH.debtValue)
+                      .mul(100)
+                      .toString()
+                      .replace("USD/DAI", " ")}
+                    %
                   </p>
                 </div>
               </div>
