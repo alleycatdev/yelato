@@ -44,7 +44,7 @@ class Content extends React.Component {
     });
   }
 
-  donate() {
+  async donate() {
     const signer = new ethers.providers.Web3Provider(window.ethereum).getSigner();
 
     const yelato = new ethers.Contract(
@@ -53,7 +53,11 @@ class Content extends React.Component {
       signer
     );
 
-    yelato.provideFunds();
+    const amount = ethers.utils.parseUnits(this.state.amount.toString());
+
+    await yelato.provideFunds({ value: amount }).catch((error) => {
+      console.log("user rejected transaction", error);
+    });
   }
 
   updateDonationAmount(event) {
@@ -123,7 +127,7 @@ class Content extends React.Component {
           )}
         </div>
 
-        {this.props.web3 && (
+        {web3 && (
           <div className="yelato-balance">
             Yelato Transactions Balance:{" "}
             <span className="highlight-balance">{this.props.yelatoBalance}</span> ETH
@@ -136,6 +140,17 @@ class Content extends React.Component {
               Donate to support the automatic liquidation protection. Funds will exclusively be used
               to cover the transaction fees when wiping debt of the yETH vault.
             </p>
+
+            <div>
+              <input
+                type="number"
+                min="0.01"
+                step="0.01"
+                onChange={this.updateDonationAmount}
+                class="donation-input mb-2"
+                value={this.state.amount}
+              />
+            </div>
 
             <button className="call-to-action mb-6" disabled={!web3} onClick={this.donate}>
               Donate ETH
