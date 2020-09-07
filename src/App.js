@@ -79,8 +79,6 @@ class App extends React.Component {
       process.env.REACT_APP_YELATO_CONTRACT
     );
 
-    console.log(balance);
-
     this.setState({
       yelatoBalance: balance.toString(),
     });
