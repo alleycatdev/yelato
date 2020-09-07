@@ -80,7 +80,7 @@ class App extends React.Component {
     );
 
     this.setState({
-      yelatoBalance: balance.toString(),
+      yelatoBalance: balance,
     });
   }
 

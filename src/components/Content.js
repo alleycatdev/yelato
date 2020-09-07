@@ -130,7 +130,10 @@ class Content extends React.Component {
         {web3 && (
           <div className="yelato-balance">
             Yelato Transactions Balance:{" "}
-            <span className="highlight-balance">{this.props.yelatoBalance}</span> ETH
+            <span className="highlight-balance">
+              {this.props.yelatoBalance && ethers.utils.formatEther(this.props.yelatoBalance)}
+            </span>{" "}
+            ETH
           </div>
         )}
 
