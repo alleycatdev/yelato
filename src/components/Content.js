@@ -4,8 +4,10 @@ import { McdPlugin } from "@makerdao/dai-plugin-mcd";
 import ethers from "ethers";
 import "../assets/stylesheets/content.scss";
 import gelatoLogo from "../assets/images/gelato_logo_white.png";
+import GelatoCoreLib from "@gelatonetwork/core";
 
 import GelatoManagerAbi from "../abis/gelatoManager.json";
+import ChainLinkOracleAbi from "../abis/chainlinkGasOracle.json";
 
 class Content extends React.Component {
   constructor(props) {
@@ -19,6 +21,7 @@ class Content extends React.Component {
     this.fetchCdpData = this.fetchCdpData.bind(this);
     this.donate = this.donate.bind(this);
     this.updateDonationAmount = this.updateDonationAmount.bind(this);
+    this.getYelatoBalance = this.getYelatoBalance.bind(this);
   }
 
   async componentDidMount() {
@@ -26,6 +29,24 @@ class Content extends React.Component {
       plugins: [McdPlugin],
       url: `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_PROJECT_ID}`,
     });
+
+    const provider = ethers.getDefaultProvider("homestead");
+
+    const gelato = new ethers.Contract(
+      process.env.REACT_APP_GELATO_CORE,
+      GelatoCoreLib.GelatoCore.abi,
+      provider
+    );
+
+    this.setState({
+      gelatoCore: gelato,
+    });
+
+    this.getYelatoBalance();
+
+    setTimeout(async () => {
+      this.getYelatoBalance();
+    }, 60000);
 
     const manager = await maker.service("mcd:cdpManager");
 
@@ -57,6 +78,25 @@ class Content extends React.Component {
 
     await yelato.provideFunds({ value: amount }).catch((error) => {
       console.log("user rejected transaction", error);
+    });
+  }
+
+  async getYelatoBalance() {
+    const { gelatoCore } = this.state;
+
+    const balance = await gelatoCore.providerFunds(process.env.REACT_APP_YELATO_CONTRACT);
+
+    const gelatoGasPriceOracleAddress = await gelatoCore.gelatoGasPriceOracle();
+    const gelatoGasPriceOracle = await new ethers.Contract(
+      gelatoGasPriceOracleAddress,
+      ChainLinkOracleAbi,
+      ethers.getDefaultProvider("homestead")
+    );
+    const gelatoGasPrice = await gelatoGasPriceOracle.latestAnswer();
+
+    this.setState({
+      yelatoBalance: balance,
+      gelatoGasPrice: gelatoGasPrice,
     });
   }
 
@@ -119,13 +159,38 @@ class Content extends React.Component {
           )}
         </div>
 
-        {web3 && (
-          <div className="yelato-balance">
-            Yelato Transactions Balance:{" "}
-            <span className="highlight-balance">
-              {this.props.yelatoBalance && ethers.utils.formatEther(this.props.yelatoBalance)}
-            </span>{" "}
-            ETH
+        {this.state.yelatoBalance && (
+          <div className="level">
+            <div className="level-item has-text-centered gelato-data">
+              Yelato Transactions Balance:{" "}
+              <span className="highlight-balance mx-1">
+                {ethers.utils.formatEther(this.state.yelatoBalance)}
+              </span>{" "}
+              ETH
+            </div>
+
+            <div className="level-item has-text-centered gelato-data">
+              Chainlink Gas Price:{" "}
+              <span className="highlight-balance mx-1">
+                {ethers.utils.formatUnits(this.state.gelatoGasPrice.toString(), "gwei")}
+              </span>{" "}
+              GWEI
+            </div>
+
+            <div className="level-item has-text-centered gelato-data">
+              Transaction Cost:{" "}
+              <span className="highlight-balance mx-1">
+                {ethers.utils.formatEther(this.state.gelatoGasPrice.mul("1200000"))}
+              </span>{" "}
+              ETH
+            </div>
+
+            <div className="level-item has-text-centered gelato-data">
+              Transactions Remaining:{" "}
+              <span className="highlight-balance mx-1">
+                {this.state.yelatoBalance.div(this.state.gelatoGasPrice.mul("1200000")).toString()}
+              </span>{" "}
+            </div>
           </div>
         )}
 
@@ -142,7 +207,7 @@ class Content extends React.Component {
                 min="0.01"
                 step="0.01"
                 onChange={this.updateDonationAmount}
-                class="donation-input mb-2"
+                className="donation-input mb-2"
                 value={this.state.amount}
               />
             </div>

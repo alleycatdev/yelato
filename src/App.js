@@ -2,7 +2,6 @@ import React from "react";
 import Web3Modal from "web3modal";
 import ethers from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import GelatoCoreLib from "@gelatonetwork/core";
 import "./assets/stylesheets/app.scss";
 
 // Components
@@ -20,7 +19,6 @@ class App extends React.Component {
 
     this.connectWallet = this.connectWallet.bind(this);
     this.disconnectWallet = this.disconnectWallet.bind(this);
-    this.getYelatoBalance = this.getYelatoBalance.bind(this);
   }
 
   async connectWallet() {
@@ -42,24 +40,11 @@ class App extends React.Component {
 
     const web3 = new ethers.providers.Web3Provider(provider);
 
-    const gelato = new ethers.Contract(
-      process.env.REACT_APP_GELATO_CORE,
-      GelatoCoreLib.GelatoCore.abi,
-      web3
-    );
-
     this.setState({
       web3: web3,
       provider: provider,
       walletInitialized: true,
-      gelatoCore: gelato,
     });
-
-    this.getYelatoBalance();
-
-    setTimeout(() => {
-      this.getYelatoBalance();
-    }, 60000);
   }
 
   async disconnectWallet() {
@@ -71,16 +56,6 @@ class App extends React.Component {
       web3: null,
       provider: null,
       walletInitialized: false,
-    });
-  }
-
-  async getYelatoBalance() {
-    const balance = await this.state.gelatoCore.providerFunds(
-      process.env.REACT_APP_YELATO_CONTRACT
-    );
-
-    this.setState({
-      yelatoBalance: balance,
     });
   }
 
