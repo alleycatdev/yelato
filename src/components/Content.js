@@ -167,7 +167,7 @@ class Content extends React.Component {
         {this.state.yelatoBalance && (
           <div className="level">
             <div className="level-item has-text-centered gelato-data">
-              Yelato Transactions Balance:{" "}
+              Transactions Balance:{" "}
               <span className="highlight-balance mx-1">
                 {ethers.utils.formatEther(this.state.yelatoBalance)}
               </span>{" "}
