@@ -7,6 +7,7 @@ import "./assets/stylesheets/app.scss";
 // Components
 import Navbar from "./components/Navbar.js";
 import Content from "./components/Content.js";
+import Footer from "./components/Footer.js";
 
 class App extends React.Component {
   constructor(props) {
@@ -69,6 +70,8 @@ class App extends React.Component {
         />
 
         <Content {...this.state} />
+
+        <Footer {...this.state} />
       </div>
     );
   }
